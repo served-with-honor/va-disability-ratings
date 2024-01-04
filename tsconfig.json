@@ -1,25 +1,28 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "outDir": "./build",
+    "module": "CommonJS",
+    "target": "es5",
+    "declaration": true,
+    "strict": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "lib",
-    "sourceMap": true,
-    "strict": true,
-    "target": "es2015",
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports" : true,
+    "noImplicitAny": false,
     "resolveJsonModule": true,
   },
   "compileOnSave": true,
   "include": [
-    "src/**/*.json",
-    "src"
+    "./src/**/*.js",
+    "./src/**/*.ts",
+    "./src/**/*.d.ts",
   ],
   "exclude": [
     "node_modules",
-    "lib",
-    "src/**/*.test.ts",
+    "build",
+    "tests",
   ],
   "paths": {
     "~*": ["./src/*"],

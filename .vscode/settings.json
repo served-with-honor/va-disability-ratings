@@ -1,0 +1,4 @@
+{
+  "eslint.lintTask.options": "-c ./.eslintrc.yaml --ignore-path ./.eslintignore ./src",
+  "files.eol": "\n"
+}
