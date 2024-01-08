@@ -1,5 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/semi, import/no-extraneous-dependencies
+import * as currency from 'currency.js'
 import vaRates from './rates/index';
 import { IFamily, IRates } from './types';
+
 /**
  * Get rate type for a given family
  * @function getRateType
@@ -39,11 +42,11 @@ export function getRateType({
  */
 export function getRateAmount(category: string, percent: number, year?: number): number {
   const rates: IRates = year ? vaRates[year.toString()] : vaRates.latest;
-  if (!rates || !(category in rates) || !(percent in rates[category])) return 0;
+  if (!rates || !(category in rates) || !(percent in rates[category])) return currency(0).value;
   const categoryRates = rates[category];
   const rateAmount = categoryRates[percent.toString()];
-  if (!rateAmount) return 0;
-  return parseFloat(rateAmount.toString());
+  if (!rateAmount) return currency(0).value;
+  return currency(rateAmount).value;
 }
 
 /**
@@ -59,16 +62,20 @@ export function getPaymentAmountForChildren(
   children: number,
   adultChildren: number,
   year?: number,
-) {
-  if (!rating || (children <= 1 && !adultChildren)) return 0;
-  let amount = 0;
-  if (children > 1) {
-    amount += (children - 1) * getRateAmount('additionalchild', rating, year);
-  }
-  if (adultChildren > 0) {
-    amount += adultChildren * getRateAmount('additionalchildover18', rating, year);
-  }
-  return amount;
+): number {
+  let payment = currency(0);
+  if (!rating || (children <= 1 && !adultChildren)) return payment.value;
+
+  const doStuff = (label, count) => {
+    const rate = currency(getRateAmount(label, rating, year));
+    const amount = rate.multiply(count);
+    payment = currency(payment).add(amount);
+  };
+
+  if (children > 1) doStuff('additionalchild', children - 1);
+  if (adultChildren > 0) doStuff('additionalchildover18', adultChildren);
+
+  return payment.value;
 }
 
 /**
@@ -92,7 +99,7 @@ export default function calculatePayment(
   family: IFamily = {},
   year?: number,
 ) : number {
-  if (!rating) return 0;
+  if (!rating) return currency(0).value;
 
   const {
     children = 0,
@@ -114,7 +121,9 @@ export default function calculatePayment(
     getPaymentAmountForChildren(rating, children, adultChildren, year)
   );
 
-  const paymentAmount = baseRatePayment + additionalChildrenPayment + spouseAidPayment;
+  const paymentAmount = currency(baseRatePayment)
+    .add(additionalChildrenPayment)
+    .add(spouseAidPayment);
 
-  return paymentAmount > 0 ? paymentAmount : 0;
+  return paymentAmount.value;
 }
