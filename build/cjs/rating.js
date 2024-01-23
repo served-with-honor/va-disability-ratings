@@ -3,15 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.calculateBilateral = exports.calculatePercent = void 0;
 var utilities_1 = require("./utilities");
 /**
- *
- * @param {number[]} arr
- * @return {number}
+ * Calculate disability percentage
+ * @function calculatePercent
+ * @param {number[]} ratings - Array of disability ratings
+ * @return {number} - Combined disability percentage
  */
-function calculatePercent(arr) {
+function calculatePercent(ratings) {
     // Still fuzy on this math but it works ¯\_(ツ)_/¯
     // Sort in descending order (largest first)
-    arr.sort(function (a, b) { return b - a; });
-    var final = arr.reduce(function (total, cur, idx) {
+    ratings.sort(function (a, b) { return b - a; });
+    var final = ratings.reduce(function (total, cur, idx) {
         if (idx === 0)
             return total + cur;
         var diff = 1 - total;
@@ -26,8 +27,10 @@ function calculatePercent(arr) {
 }
 exports.calculatePercent = calculatePercent;
 /**
- * @param  {number[]} disabilities
- * @return {IBilateral}
+ * Calculate bilateral factor and percentage
+ * @function calculateBilateral
+ * @param  {number[]} disabilities - Array of disability ratings
+ * @return {IBilateral} - Bilateral factor and percentage
  * @description
  */
 /*
@@ -45,8 +48,10 @@ This gives us a combined rating of 31% for the veteran’s bilateral conditions.
 The 31% is the result of rounding 30.8% to the nearest whole number.
 */
 function calculateBilateral(disabilities) {
-    if (!disabilities || disabilities.length <= 1)
-        return undefined;
+    if (!disabilities.every(utilities_1.isValidRating))
+        throw new Error('Invalid ratings');
+    if (disabilities.length <= 1)
+        throw new Error('Insufficient ratings');
     var percentagesDecimals = disabilities.map(function (percent) { return percent / 100; });
     var calculatedPercent = calculatePercent(percentagesDecimals);
     var factorDecimal = (0, utilities_1.round)(calculatedPercent * 0.1, 3);
@@ -57,14 +62,19 @@ function calculateBilateral(disabilities) {
 }
 exports.calculateBilateral = calculateBilateral;
 /**
- * @param  {number[]} percentages
- * @return {IRating}
+ * Calculate total and rounded rating
+ * @function calculateRating
+ * @param  {number[]} percentages - Array of disability percentages
+ * @return {IRating} - Total and rounded rating percentage as whole numbers
+ * @example
+ * calculateRating([20, 30]);
+ * // returns { total: 44, rounded: 40 }
  */
 function calculateRating(percentages) {
     var percentagesDecimals = percentages.map(function (percent) { return percent / 100; });
     var percentvalue = calculatePercent(percentagesDecimals);
     // Combined / total disability percent
-    var total = percentvalue > 1 ? 100 : (0, utilities_1.round)(percentvalue, 2) * 100;
+    var total = percentvalue > 1 ? 100 : (0, utilities_1.round)(percentvalue * 100);
     var rounded = (0, utilities_1.round)(percentvalue, 1) * 100;
     return { total: total, rounded: rounded };
 }

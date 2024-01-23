@@ -1,10 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPaymentAmountForChildren = exports.getRateAmount = exports.getRateType = void 0;
+var currency_js_1 = require("currency.js");
 var index_1 = require("./rates/index");
+var utilities_1 = require("./utilities");
 /**
- * @param  {{isMarried: boolean, hasChildren: boolean, parents: number}} family
- * @return  {string}
+ * Get rate type for a given family
+ * @function getRateType
+ * @param  {Object} family
+ * @param  {boolean} [family.isMarried] - Is the veteran married?
+ * @param {boolean} [family.hasChildren] - Does the veteran have children?
+ * @param {number} [family.parents] - Number of dependent parents
+ * @return  {string} - Rate type
  */
 function getRateType(_a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.isMarried, isMarried = _c === void 0 ? false : _c, _d = _b.hasChildren, hasChildren = _d === void 0 ? false : _d, _e = _b.parents, parents = _e === void 0 ? 0 : _e;
@@ -36,50 +43,74 @@ function getRateType(_a) {
 }
 exports.getRateType = getRateType;
 /**
- * @param  {string} cat
- * @param  {number} percent
- * @param  {number} year?
+ * Get rate amount for a given category and percentage
+ * @function getRateAmount
+ * @param  {string} category - Rate category
+ * @param  {number} percent - Rating percentage as a whole number, e.g. 30
+ * @param  {number} [year]
  * @return {number}
  */
 function getRateAmount(category, percent, year) {
     var rates = year ? index_1.default[year.toString()] : index_1.default.latest;
-    if (!rates || !(category in rates) || !(percent in rates[category]))
-        return 0;
+    if (!rates)
+        throw new Error('Invalid year');
+    if (!(category in rates))
+        throw new Error('Invalid category');
+    if (!(0, utilities_1.isValidRating)(percent) || !(percent in rates[category]))
+        throw new Error('Invalid percent');
     var categoryRates = rates[category];
     var rateAmount = categoryRates[percent.toString()];
     if (!rateAmount)
-        return 0;
-    return parseFloat(rateAmount.toString());
+        return (0, currency_js_1.default)(0).value;
+    return (0, currency_js_1.default)(rateAmount).value;
 }
 exports.getRateAmount = getRateAmount;
 /**
- * @param  {number} rating
- * @param  {number} children
- * @param  {number} adultChildren
- * @return {number}
+ * Calculate payment amount for children
+ * @function getPaymentAmountForChildren
+ * @param  {number} rating - Rating percentage as a whole number, e.g. 30
+ * @param  {number} children - Number of minor children
+ * @param  {number} adultChildren - Number of adult children
+ * @return {number} - Additional payment dollar amount
  */
 function getPaymentAmountForChildren(rating, children, adultChildren, year) {
-    if (!rating || (children <= 1 && !adultChildren))
-        return 0;
-    var amount = 0;
-    if (children > 1) {
-        amount += (children - 1) * getRateAmount('additionalchild', rating, year);
-    }
-    if (adultChildren > 0) {
-        amount += adultChildren * getRateAmount('additionalchildover18', rating, year);
-    }
-    return amount;
+    var payment = (0, currency_js_1.default)(0);
+    if (!(0, utilities_1.isValidRating)(rating))
+        throw new Error('Invalid rating');
+    if (rating < 30 || (children <= 1 && !adultChildren))
+        return payment.value;
+    var doStuff = function (label, count) {
+        var rate = (0, currency_js_1.default)(getRateAmount(label, rating, year));
+        var amount = rate.multiply(count);
+        payment = (0, currency_js_1.default)(payment).add(amount);
+    };
+    if (children > 1)
+        doStuff('additionalchild', children - 1);
+    if (adultChildren > 0)
+        doStuff('additionalchildover18', adultChildren);
+    return payment.value;
 }
 exports.getPaymentAmountForChildren = getPaymentAmountForChildren;
 /**
- * @param  {number} rating
- * @param  {IFamily} family
- * @return {number}
+ * Calculate payment amount based on rating, family, and year
+ * @function calculatePayment
+ * @param  {number} rating - Rating percentage as a whole number, e.g. 30
+ * @param  {Object} [family]
+ * @param  {boolean} [family.isMarried] - Is the veteran married?
+ * @param {boolean} [family.spouseAid] - Does the spouse require aid & attendance (A/A)
+ * @param {number} [family.children] - Number of minor children
+ * @param {number} [family.adultChildren] - Number of adult children
+ * @param {number} [family.parents] - Number of dependent parents
+ * @param  {number} [year]
+ * @return {number} - Payment dollar amount
+ * @example
+ * calculatePayment(30, { isMarried: true, children: 2 }, 2024);
+ * // returns 663.31
  */
 function calculatePayment(rating, family, year) {
     if (family === void 0) { family = {}; }
     if (!rating)
-        return 0;
+        return (0, currency_js_1.default)(0).value;
     var _a = family.children, children = _a === void 0 ? 0 : _a, _b = family.isMarried, isMarried = _b === void 0 ? false : _b, _c = family.spouseAid, spouseAid = _c === void 0 ? false : _c, _d = family.adultChildren, adultChildren = _d === void 0 ? 0 : _d, _e = family.parents, parents = _e === void 0 ? 0 : _e;
     var hasMinorChildren = children > 0;
     var rateType = rating >= 30
@@ -87,8 +118,10 @@ function calculatePayment(rating, family, year) {
         : 'veteran';
     var baseRatePayment = getRateAmount(rateType, rating, year);
     var spouseAidPayment = isMarried && spouseAid ? getRateAmount('aaspouse', rating, year) : 0;
-    var additionalChildrenPayment = (getPaymentAmountForChildren(rating, children, adultChildren, year));
-    var paymentAmount = baseRatePayment + additionalChildrenPayment + spouseAidPayment;
-    return paymentAmount > 0 ? paymentAmount : 0;
+    var additionalChildrenPayment = children || adultChildren ? (getPaymentAmountForChildren(rating, children, adultChildren, year)) : 0;
+    var paymentAmount = (0, currency_js_1.default)(baseRatePayment)
+        .add(additionalChildrenPayment)
+        .add(spouseAidPayment);
+    return paymentAmount.value;
 }
 exports.default = calculatePayment;

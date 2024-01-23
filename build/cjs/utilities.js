@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterBilateralMatches = exports.getInverseSide = exports.getInverseSideName = exports.round = exports.formatCurrency = void 0;
+exports.isValidRating = exports.filterBilateralMatches = exports.getInverseSide = exports.getInverseSideName = exports.round = exports.formatCurrency = void 0;
 /**
  * @param  {number} num
  * @return {string}
@@ -25,7 +25,10 @@ exports.getInverseSide = getInverseSide;
 function filterBilateralMatches(items) {
     var listHasMatches = function (item, idx, arr) {
         var matchingPairName = (0, exports.getInverseSide)(item.label).toLowerCase();
-        return arr.some(function (item2) { return item2.label.toLowerCase() === matchingPairName; });
+        return arr.some(function (_a) {
+            var label = _a.label;
+            return label.toLowerCase() === matchingPairName;
+        });
     };
     var listHasNoMatches = function (item, idx, arr) {
         var matchingPairName = (0, exports.getInverseSide)(item.label).toLowerCase();
@@ -37,3 +40,5 @@ function filterBilateralMatches(items) {
     return [hasMatches, noMatches];
 }
 exports.filterBilateralMatches = filterBilateralMatches;
+var isValidRating = function (rating) { return (rating <= 100 && rating >= 0 && rating % 10 === 0); };
+exports.isValidRating = isValidRating;

@@ -12,3 +12,4 @@ export declare const getInverseSide: (text: string) => string;
  * @return {IDisability[]}
  */
 export declare function filterBilateralMatches(items: Array<IDisability>): [number[], number[]];
+export declare const isValidRating: (rating: number) => boolean;
