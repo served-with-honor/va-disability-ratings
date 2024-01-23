@@ -46,7 +46,7 @@ This gives us a combined rating of 31% for the veteran’s bilateral conditions.
 The 31% is the result of rounding 30.8% to the nearest whole number.
 */
 export function calculateBilateral(disabilities : number[]) : IBilateral | undefined {
-  if (!disabilities || disabilities.length <= 1) return undefined;
+  if (disabilities.length <= 1) throw new Error('Insufficient ratings');
 
   const percentagesDecimals = disabilities.map((percent) => percent / 100);
   const calculatedPercent = calculatePercent(percentagesDecimals);
@@ -74,7 +74,7 @@ export default function calculateRating(percentages: number[]): IRating {
   const percentvalue = calculatePercent(percentagesDecimals);
 
   // Combined / total disability percent
-  const total = percentvalue > 1 ? 100 : round(percentvalue, 2) * 100;
+  const total = percentvalue > 1 ? 100 : round(percentvalue * 100);
   const rounded = round(percentvalue, 1) * 100;
 
   return { total, rounded };

@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/semi, import/no-extraneous-dependencies
-import * as currency from 'currency.js'
+import currency from 'currency.js';
 import vaRates from './rates/index';
 import { IFamily, IRates } from './types';
 
@@ -42,7 +41,9 @@ export function getRateType({
  */
 export function getRateAmount(category: string, percent: number, year?: number): number {
   const rates: IRates = year ? vaRates[year.toString()] : vaRates.latest;
-  if (!rates || !(category in rates) || !(percent in rates[category])) return currency(0).value;
+  if (!rates) throw new Error('Invalid year');
+  if (!(category in rates)) throw new Error('Invalid category');
+
   const categoryRates = rates[category];
   const rateAmount = categoryRates[percent.toString()];
   if (!rateAmount) return currency(0).value;
@@ -64,7 +65,7 @@ export function getPaymentAmountForChildren(
   year?: number,
 ): number {
   let payment = currency(0);
-  if (!rating || (children <= 1 && !adultChildren)) return payment.value;
+  if (rating < 30 || (children <= 1 && !adultChildren)) return payment.value;
 
   const doStuff = (label, count) => {
     const rate = currency(getRateAmount(label, rating, year));
@@ -117,9 +118,9 @@ export default function calculatePayment(
 
   const baseRatePayment = getRateAmount(rateType, rating, year);
   const spouseAidPayment = isMarried && spouseAid ? getRateAmount('aaspouse', rating, year) : 0;
-  const additionalChildrenPayment = (
+  const additionalChildrenPayment = children || adultChildren ? (
     getPaymentAmountForChildren(rating, children, adultChildren, year)
-  );
+  ) : 0;
 
   const paymentAmount = currency(baseRatePayment)
     .add(additionalChildrenPayment)
