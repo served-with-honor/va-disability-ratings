@@ -1,5 +1,5 @@
 import type { IBilateral, IRating } from './types';
-import { round } from './utilities';
+import { round, isValidRating } from './utilities';
 
 /**
  * Calculate disability percentage
@@ -46,6 +46,7 @@ This gives us a combined rating of 31% for the veteran’s bilateral conditions.
 The 31% is the result of rounding 30.8% to the nearest whole number.
 */
 export function calculateBilateral(disabilities : number[]) : IBilateral | undefined {
+  if (!disabilities.every(isValidRating)) throw new Error('Invalid ratings');
   if (disabilities.length <= 1) throw new Error('Insufficient ratings');
 
   const percentagesDecimals = disabilities.map((percent) => percent / 100);

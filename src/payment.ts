@@ -1,6 +1,7 @@
 import currency from 'currency.js';
 import vaRates from './rates/index';
 import { IFamily, IRates } from './types';
+import { isValidRating } from './utilities';
 
 /**
  * Get rate type for a given family
@@ -43,6 +44,7 @@ export function getRateAmount(category: string, percent: number, year?: number):
   const rates: IRates = year ? vaRates[year.toString()] : vaRates.latest;
   if (!rates) throw new Error('Invalid year');
   if (!(category in rates)) throw new Error('Invalid category');
+  if (!isValidRating(percent) || !(percent in rates[category])) throw new Error('Invalid percent');
 
   const categoryRates = rates[category];
   const rateAmount = categoryRates[percent.toString()];
@@ -65,6 +67,7 @@ export function getPaymentAmountForChildren(
   year?: number,
 ): number {
   let payment = currency(0);
+  if (!isValidRating(rating)) throw new Error('Invalid rating');
   if (rating < 30 || (children <= 1 && !adultChildren)) return payment.value;
 
   const doStuff = (label, count) => {

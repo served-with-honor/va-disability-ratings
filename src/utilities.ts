@@ -40,3 +40,7 @@ export function filterBilateralMatches(items: Array<IDisability>) : [number[], n
 
   return [hasMatches, noMatches];
 }
+
+export const isValidRating = (rating: number): boolean => (
+  rating <= 100 && rating >= 0 && rating % 10 === 0
+);

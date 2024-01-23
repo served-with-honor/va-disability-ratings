@@ -51,4 +51,11 @@ describe('Bilaterals', () => {
   });
 });
 
+describe('Valid Rating', () => {
+  test('Valid', () => expect(isValidRating(20)).toBe(true));
+  test('Over 100', () => expect(isValidRating(200)).toBe(false));
+  test('Under 0', () => expect(isValidRating(-20)).toBe(false));
+  test('Not multiple of 10', () => expect(isValidRating(12)).toBe(false));
+});
+
 export { };
