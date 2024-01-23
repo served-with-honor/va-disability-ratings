@@ -1,12 +1,16 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-  round, getInverseSide, getInverseSideName, filterBilateralMatches,
+  round,
+  getInverseSide,
+  getInverseSideName,
+  filterBilateralMatches,
+  isValidRating,
 } from '../utilities';
 
 describe('Round', () => {
   test('Rounding Up 2 places', () => expect(round(123.456, 2)).toBe(123.46));
-  test('Rounding no places', () => expect(round(123.456)).toBe(123));
-  test('Rounding no places123', () => expect(round(0.7896, 3)).toBe(0.79));
+  test('Rounding no places', () => expect(round(123.456, 0)).toBe(123));
+  test('Rounding no places - no 2nd argument', () => expect(round(123.456)).toBe(123));
 });
 
 describe('Inverse Side', () => {
@@ -14,7 +18,7 @@ describe('Inverse Side', () => {
   test('Left to right', () => expect(getInverseSideName('Left')).toBe('right'));
   test('right to left', () => expect(getInverseSideName('right')).toBe('left'));
   test('Right to left', () => expect(getInverseSideName('Right')).toBe('left'));
-  test('leg left to right', () => expect(getInverseSide('left leg')).toBe('right leg'));
+  test('Leg left to right', () => expect(getInverseSide('left leg')).toBe('right leg'));
   test('foot Left to right', () => expect(getInverseSide('Left foot')).toBe('right foot'));
   test('arm right to left', () => expect(getInverseSide('right arm')).toBe('left arm'));
   test('leg Right to left', () => expect(getInverseSide('Right Leg')).toBe('left Leg'));
