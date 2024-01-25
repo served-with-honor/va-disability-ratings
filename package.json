@@ -1,5 +1,5 @@
 {
-  "name": "va-disability-ratings",
+  "name": "@served-with-honor/va-disability-ratings",
   "description": "JS Library for VA Disability Ratings & Payments",
   "type": "module",
   "auther": "Lee Wise <me@theleewise.com> (https://theleewise.com)",
@@ -46,7 +46,6 @@
     "ts-jest": "^27.1.4",
     "typescript": "^4.5.4"
   },
-  "private": true,
   "license": "UNLICENSED",
   "dependencies": {
     "currency.js": "^2.0.4"
