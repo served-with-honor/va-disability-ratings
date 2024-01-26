@@ -1,5 +1,5 @@
 import type { IBilateral, IRating } from './types';
-import { round, isValidRating } from './utilities';
+import { round, isValidRating } from './utilities.js';
 
 /**
  * Calculate disability percentage

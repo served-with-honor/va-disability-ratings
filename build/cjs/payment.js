@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPaymentAmountForChildren = exports.getRateAmount = exports.getRateType = void 0;
 var currency_js_1 = require("currency.js");
-var index_1 = require("./rates/index");
-var utilities_1 = require("./utilities");
+var index_js_1 = require("./rates/index.js");
+var utilities_js_1 = require("./utilities.js");
 /**
  * Get rate type for a given family
  * @function getRateType
@@ -51,12 +51,12 @@ exports.getRateType = getRateType;
  * @return {number}
  */
 function getRateAmount(category, percent, year) {
-    var rates = year ? index_1.default[year.toString()] : index_1.default.latest;
+    var rates = year ? index_js_1.default[year.toString()] : index_js_1.default.latest;
     if (!rates)
         throw new Error('Invalid year');
     if (!(category in rates))
         throw new Error('Invalid category');
-    if (!(0, utilities_1.isValidRating)(percent) || !(percent in rates[category]))
+    if (!(0, utilities_js_1.isValidRating)(percent) || !(percent in rates[category]))
         throw new Error('Invalid percent');
     var categoryRates = rates[category];
     var rateAmount = categoryRates[percent.toString()];
@@ -75,7 +75,7 @@ exports.getRateAmount = getRateAmount;
  */
 function getPaymentAmountForChildren(rating, children, adultChildren, year) {
     var payment = (0, currency_js_1.default)(0);
-    if (!(0, utilities_1.isValidRating)(rating))
+    if (!(0, utilities_js_1.isValidRating)(rating))
         throw new Error('Invalid rating');
     if (rating < 30 || (children <= 1 && !adultChildren))
         return payment.value;
