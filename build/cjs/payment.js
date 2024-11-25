@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPaymentAmountForChildren = exports.getRateAmount = exports.getRateType = void 0;
-var currency_js_1 = require("currency.js");
-var index_js_1 = require("./rates/index.js");
-var utilities_js_1 = require("./utilities.js");
+var currency = require("currency.js");
+var rates_1 = require("./rates");
+var utilities_1 = require("./utilities");
 /**
  * Get rate type for a given family
  * @function getRateType
@@ -51,18 +51,18 @@ exports.getRateType = getRateType;
  * @return {number}
  */
 function getRateAmount(category, percent, year) {
-    var rates = year ? index_js_1.default[year.toString()] : index_js_1.default.latest;
+    var rates = year ? rates_1.default[year.toString()] : rates_1.default.latest;
     if (!rates)
         throw new Error('Invalid year');
     if (!(category in rates))
         throw new Error('Invalid category');
-    if (!(0, utilities_js_1.isValidRating)(percent) || !(percent in rates[category]))
+    if (!(0, utilities_1.isValidRating)(percent) || !(percent in rates[category]))
         throw new Error('Invalid percent');
     var categoryRates = rates[category];
     var rateAmount = categoryRates[percent.toString()];
     if (!rateAmount)
-        return (0, currency_js_1.default)(0).value;
-    return (0, currency_js_1.default)(rateAmount).value;
+        return currency(0).value;
+    return currency(rateAmount).value;
 }
 exports.getRateAmount = getRateAmount;
 /**
@@ -74,15 +74,15 @@ exports.getRateAmount = getRateAmount;
  * @return {number} - Additional payment dollar amount
  */
 function getPaymentAmountForChildren(rating, children, adultChildren, year) {
-    var payment = (0, currency_js_1.default)(0);
-    if (!(0, utilities_js_1.isValidRating)(rating))
+    var payment = currency(0);
+    if (!(0, utilities_1.isValidRating)(rating))
         throw new Error('Invalid rating');
     if (rating < 30 || (children <= 1 && !adultChildren))
         return payment.value;
     var doStuff = function (label, count) {
-        var rate = (0, currency_js_1.default)(getRateAmount(label, rating, year));
+        var rate = currency(getRateAmount(label, rating, year));
         var amount = rate.multiply(count);
-        payment = (0, currency_js_1.default)(payment).add(amount);
+        payment = currency(payment).add(amount);
     };
     if (children > 1)
         doStuff('additionalchild', children - 1);
@@ -110,7 +110,7 @@ exports.getPaymentAmountForChildren = getPaymentAmountForChildren;
 function calculatePayment(rating, family, year) {
     if (family === void 0) { family = {}; }
     if (!rating)
-        return (0, currency_js_1.default)(0).value;
+        return currency(0).value;
     var _a = family.children, children = _a === void 0 ? 0 : _a, _b = family.isMarried, isMarried = _b === void 0 ? false : _b, _c = family.spouseAid, spouseAid = _c === void 0 ? false : _c, _d = family.adultChildren, adultChildren = _d === void 0 ? 0 : _d, _e = family.parents, parents = _e === void 0 ? 0 : _e;
     var hasMinorChildren = children > 0;
     var rateType = rating >= 30
@@ -119,7 +119,7 @@ function calculatePayment(rating, family, year) {
     var baseRatePayment = getRateAmount(rateType, rating, year);
     var spouseAidPayment = isMarried && spouseAid ? getRateAmount('aaspouse', rating, year) : 0;
     var additionalChildrenPayment = children || adultChildren ? (getPaymentAmountForChildren(rating, children, adultChildren, year)) : 0;
-    var paymentAmount = (0, currency_js_1.default)(baseRatePayment)
+    var paymentAmount = currency(baseRatePayment)
         .add(additionalChildrenPayment)
         .add(spouseAidPayment);
     return paymentAmount.value;

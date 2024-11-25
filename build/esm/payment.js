@@ -1,6 +1,6 @@
-import currency from 'currency.js';
-import vaRates from './rates/index.js';
-import { isValidRating } from './utilities.js';
+import * as currency from 'currency.js';
+import vaRates from './rates';
+import { isValidRating } from './utilities';
 /**
  * Get rate type for a given family
  * @function getRateType
