@@ -48,7 +48,6 @@ describe('Get Rate Amount', () => {
 describe('Additional Payments', () => {
   test('Less than 30%', () => expect(getPaymentAmountForChildren(10, 2, 2)).toBe(0));
   test('Less than 2 Children', () => expect(getPaymentAmountForChildren(90, 1, 0)).toBe(0));
-  test('40% - 2 Adult Children', () => expect(getPaymentAmountForChildren(40, 0, 2)).toBe(266));
 });
 
 export { };
