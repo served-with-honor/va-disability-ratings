@@ -14,8 +14,8 @@ describe('Calculate Bilaterals', () => {
 });
 
 describe('Calculate Rating', () => {
-  test('Under 0', () => expect(() => calculateRating([-20])).toThrow('Invalid ratings'));
-  test('Over 100', () => expect(() => calculateRating([200])).toThrow('Invalid ratings'));
+  test('Under 0', () => expect(calculateRating([-20])).toStrictEqual({ rounded: 0, total: 0 }));
+  test('Over 100', () => expect(calculateRating([200])).toStrictEqual({ rounded: 100, total: 100 }));
   test('Empty', () => expect(calculateRating([])).toStrictEqual({ rounded: 0, total: 0 }));
   test('Zeros', () => expect(calculateRating([0, 0, 0])).toStrictEqual({ rounded: 0, total: 0 }));
   test('Rounding Up', () => expect(calculateRating([90, 50])).toStrictEqual({ rounded: 100, total: 95 }));

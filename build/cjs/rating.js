@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calculateBilateral = exports.calculatePercent = void 0;
-var utilities_js_1 = require("./utilities.js");
+var utilities_1 = require("./utilities");
 /**
  * Calculate disability percentage
  * @function calculatePercent
@@ -48,16 +48,16 @@ This gives us a combined rating of 31% for the veteran’s bilateral conditions.
 The 31% is the result of rounding 30.8% to the nearest whole number.
 */
 function calculateBilateral(disabilities) {
-    if (!disabilities.every(utilities_js_1.isValidRating))
+    if (!disabilities.every(utilities_1.isValidRating))
         throw new Error('Invalid ratings');
     if (disabilities.length <= 1)
         throw new Error('Insufficient ratings');
     var percentagesDecimals = disabilities.map(function (percent) { return percent / 100; });
     var calculatedPercent = calculatePercent(percentagesDecimals);
-    var factorDecimal = (0, utilities_js_1.round)(calculatedPercent * 0.1, 3);
-    var percentDecimal = (0, utilities_js_1.round)(calculatedPercent + factorDecimal, 2);
-    var factor = (0, utilities_js_1.round)(factorDecimal * 100, 1);
-    var percent = (0, utilities_js_1.round)(percentDecimal * 100);
+    var factorDecimal = (0, utilities_1.round)(calculatedPercent * 0.1, 3);
+    var percentDecimal = (0, utilities_1.round)(calculatedPercent + factorDecimal, 2);
+    var factor = (0, utilities_1.round)(factorDecimal * 100, 1);
+    var percent = (0, utilities_1.round)(percentDecimal * 100);
     return { factor: factor, percent: percent };
 }
 exports.calculateBilateral = calculateBilateral;
@@ -74,8 +74,8 @@ function calculateRating(percentages) {
     var percentagesDecimals = percentages.map(function (percent) { return percent / 100; });
     var percentvalue = calculatePercent(percentagesDecimals);
     // Combined / total disability percent
-    var total = percentvalue > 1 ? 100 : (0, utilities_js_1.round)(percentvalue * 100);
-    var rounded = (0, utilities_js_1.round)(percentvalue, 1) * 100;
+    var total = percentvalue > 1 ? 100 : (0, utilities_1.round)(percentvalue * 100);
+    var rounded = (0, utilities_1.round)(percentvalue, 1) * 100;
     return { total: total, rounded: rounded };
 }
 exports.default = calculateRating;

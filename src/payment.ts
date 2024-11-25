@@ -1,7 +1,7 @@
-import currency from 'currency.js';
-import vaRates from './rates/index.js';
+import * as currency from 'currency.js';
+import vaRates from './rates';
 import { IFamily, IRates } from './types';
-import { isValidRating } from './utilities.js';
+import { isValidRating } from './utilities';
 
 /**
  * Get rate type for a given family

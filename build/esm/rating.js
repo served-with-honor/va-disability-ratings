@@ -1,4 +1,4 @@
-import { round, isValidRating } from './utilities.js';
+import { round, isValidRating } from './utilities';
 /**
  * Calculate disability percentage
  * @function calculatePercent
