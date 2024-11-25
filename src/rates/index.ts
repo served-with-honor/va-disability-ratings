@@ -1,9 +1,9 @@
 import type { IRates } from '../types';
-import varates2024 from './varates2024.js';
-import varates2023 from './varates2023.js';
-import varates2022 from './varates2022.js';
-import varates2021 from './varates2021.js';
-import varates2020 from './varates2020.js';
+import varates2024 from './varates2024';
+import varates2023 from './varates2023';
+import varates2022 from './varates2022';
+import varates2021 from './varates2021';
+import varates2020 from './varates2020';
 
 const vaRates : { [key : string] : IRates } = {
   latest: varates2024,
