@@ -1,4 +1,4 @@
-import * as currency from 'currency.js';
+import currency from 'currency.js';
 import vaRates from './rates';
 import { isValidRating } from './utilities';
 /**
