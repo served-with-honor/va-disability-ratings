@@ -1,4 +1,4 @@
-import type { IDisability } from './types';
+import type { IDisability } from './types.js';
 /**
  * @param  {number} num
  * @return {string}

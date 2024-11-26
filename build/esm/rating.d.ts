@@ -1,4 +1,4 @@
-import type { IBilateral, IRating } from './types';
+import type { IBilateral, IRating } from './types.js';
 /**
  * Calculate disability percentage
  * @function calculatePercent

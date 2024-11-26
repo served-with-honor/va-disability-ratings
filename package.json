@@ -23,7 +23,8 @@
     "test:ci": "jest --ci --reporters='default' --reporters='./github-actions-reporter'",
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
     "build:clean": "rm -rf ./build",
-    "build": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js"
+    "fix": "fix-esm-import-path build/",
+    "build": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js && fix-esm-import-path build/esm"
   },
   "engines": {
     "node": "18"
@@ -46,6 +47,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "currency.js": "^2.0.4"
+    "currency.js": "^2.0.4",
+    "fix-esm-import-path": "^1.10.1"
   }
 }

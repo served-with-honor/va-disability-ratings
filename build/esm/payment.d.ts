@@ -1,4 +1,4 @@
-import { IFamily } from './types';
+import { IFamily } from './types.js';
 /**
  * Get rate type for a given family
  * @function getRateType

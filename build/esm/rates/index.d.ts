@@ -1,4 +1,4 @@
-import type { IRates } from '../types';
+import type { IRates } from '../types.js';
 declare const vaRates: {
     [key: string]: IRates;
 };

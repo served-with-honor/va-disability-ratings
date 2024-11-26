@@ -1904,6 +1904,13 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
+fix-esm-import-path@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/fix-esm-import-path/-/fix-esm-import-path-1.10.1.tgz#c68059a33680eb436d2494b69a75dd5da60aa96d"
+  integrity sha512-9PyPwTRujdf6UWDWMz4W1HUlPVHliD68aOC2tpRO+XvRfM1lQjJb8eo1yNVo8G9XZfYoWLPstoXxaUnnpP3TIA==
+  dependencies:
+    debug "^4.3.2"
+
 flat-cache@^3.0.4:
   version "3.2.0"
   resolved "https://registry.npmjs.org/flat-cache/-/flat-cache-3.2.0.tgz"

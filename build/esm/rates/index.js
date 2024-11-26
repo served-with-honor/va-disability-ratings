@@ -1,9 +1,9 @@
-import varates2025 from './varates2025';
-import varates2024 from './varates2024';
-import varates2023 from './varates2023';
-import varates2022 from './varates2022';
-import varates2021 from './varates2021';
-import varates2020 from './varates2020';
+import varates2025 from './varates2025.js';
+import varates2024 from './varates2024.js';
+import varates2023 from './varates2023.js';
+import varates2022 from './varates2022.js';
+import varates2021 from './varates2021.js';
+import varates2020 from './varates2020.js';
 var vaRates = {
     latest: varates2025,
     2025: varates2025,
