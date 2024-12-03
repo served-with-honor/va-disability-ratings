@@ -33,9 +33,12 @@ describe('Calculate Rating Exceptions', () => {
   test('Rounding Down', () => expect(calculateRating([90, 30])).toStrictEqual({ rounded: 90, total: 93 }));
 });
 
-describe('Calculate Rating', () => {
-  test('123', () => expect(calculateRating([40, 30])).toEqual({ rounded: 60, total: 58 }));
+describe('Calculate Specific Ratings', () => {
+  test('1', () => expect(calculateRating([40, 30])).toEqual({ rounded: 60, total: 58 }));
+  test('2', () => expect(calculateRating([10, 30, 70])).toEqual({ rounded: 80, total: 81 }));
+  test('3', () => expect(calculateRating([10, 10, 10, 30, 50])).toEqual({ rounded: 80, total: 75 }));
 });
+
 
 describe('Calculate Rating Ranges', () => {
   test('b-1', () => expect(calculateRating([10, 20])).toEqual({ rounded: 30, total: 28 }));
