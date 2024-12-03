@@ -10,14 +10,23 @@ import { round, isValidRating } from './utilities';
 export function calculateCombinedRating(ratings: number[]): number {
   if (ratings.length === 0) return 0;
 
-  // Still fuzy on this math but it works ¯\_(ツ)_/¯
-
   // Sort in descending order (largest first)
   ratings.sort((a, b) => b - a);
 
   if (ratings[0] <= 0) return 0;
   if (ratings[0] >= 100) return 100;
 
+  // Start with the largest rating (e.g., back injury at 30%). Subtract it from 100%.
+  // 100% – 30% = 70% remaining.
+  // Subtract the next rating (e.g., knee injury at 20%) from what’s left.
+  // 20% of 70% = 14%
+  // 70% – 14% = 56% remaining.
+  // Subtract the last rating (e.g., tinnitus at 10%) from the new total.
+  // 10% of 56% = 5.6%
+  // 56% – 5.6% = 50.4%.
+  // Round to the nearest 10 for the combined rating.
+  // 50.4% rounds to 50%.
+  // Lastly, subtract the result from 100 to get the final combined rating.
   const final = 100 - ratings.reduce((remaining, num) => {
     // Ignore invalid ratings
     if (num <= 0 || num >= 100) return remaining;
