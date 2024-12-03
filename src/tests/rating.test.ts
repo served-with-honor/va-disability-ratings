@@ -22,6 +22,7 @@ describe('Calculate Bilaterals', () => {
   test('Zero', () => expect(calculateBilateral([0, 0])).toEqual({ factor: 0, percent: 0 }));
   test('Simple', () => expect(calculateBilateral([30, 20])).toEqual({ factor: 4.4, percent: 48 }));
   test('Muliple', () => expect(calculateBilateral([10, 10, 10])).toEqual({ factor: 2.7, percent: 30 }));
+  test('Order Agnostic', () => expect(calculateBilateral([30, 10, 70])).toStrictEqual(calculateBilateral([10, 70, 30])));
 });
 
 describe('Calculate Rating Exceptions', () => {
@@ -33,6 +34,7 @@ describe('Calculate Rating Exceptions', () => {
   test('Empty', () => expect(calculateRating([])).toStrictEqual({ rounded: 0, total: 0 }));
   test('Rounding Up', () => expect(calculateRating([90, 50])).toStrictEqual({ rounded: 100, total: 95 }));
   test('Rounding Down', () => expect(calculateRating([90, 30])).toStrictEqual({ rounded: 90, total: 93 }));
+  test('Order Agnostic', () => expect(calculateRating([30, 10, 70])).toStrictEqual(calculateRating([10, 70, 30])));
 });
 
 describe('Calculate Specific Ratings', () => {
