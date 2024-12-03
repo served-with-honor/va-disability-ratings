@@ -41,6 +41,13 @@ describe('Calculate Specific Ratings', () => {
   test('1', () => expect(calculateRating([40, 30])).toEqual({ rounded: 60, total: 58 }));
   test('2', () => expect(calculateRating([10, 30, 70])).toEqual({ rounded: 80, total: 81 }));
   test('3', () => expect(calculateRating([10, 10, 10, 30, 50])).toEqual({ rounded: 80, total: 75 }));
+  test('4', () => expect(calculateRating([70, 50, 30, 20, 10])).toEqual({ rounded: 90, total: 93 }));
+  test('5', () => expect(calculateRating([40, 40, 30, 20, 20])).toEqual({ rounded: 80, total: 84 }));
+  test('6', () => expect(calculateRating([60, 30, 20, 20])).toEqual({ rounded: 80, total: 82 }));
+  test('7', () => expect(calculateRating([30, 30, 20, 10, 10])).toEqual({ rounded: 70, total: 69 }));
+  test('8', () => expect(calculateRating([20, 10, 10])).toEqual({ rounded: 40, total: 35 }));
+  test('9', () => expect(calculateRating([40, 40, 20])).toEqual({ rounded: 70, total: 71 }));
+  test('10', () => expect(calculateRating([30, 10, 10])).toEqual({ rounded: 40, total: 43 }));
 });
 
 describe('Calculate Rating - Single Value', () => {
