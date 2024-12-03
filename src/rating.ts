@@ -12,16 +12,14 @@ export function calculatePercent(ratings: number[]): number {
 
   // Sort in descending order (largest first)
   ratings.sort((a, b) => b - a);
-  const final = ratings.reduce((total, cur, idx) => {
-    if (idx === 0) return total + cur;
+  const final = 100 - ratings.reduce((remaining, num) => {
+    // Ignore invalid ratings
+    if (num <= 0 || num >= 100) return remaining;
 
-    const diff = 1 - total;
-    const subNum = cur * diff;
-    return subNum + total;
-  }, 0);
-  if (final >= 1) return 1;
-  if (final <= 0) return 0;
-  return Math.round(final * 100) / 100;
+    return remaining - Math.round((remaining * num) / 100);
+  }, 100);
+
+  return final;
 }
 
 /**
@@ -49,14 +47,10 @@ export function calculateBilateral(disabilities : number[]) : IBilateral | undef
   if (!disabilities.every(isValidRating)) throw new Error('Invalid ratings');
   if (disabilities.length <= 1) throw new Error('Insufficient ratings');
 
-  const percentagesDecimals = disabilities.map((percent) => percent / 100);
-  const calculatedPercent = calculatePercent(percentagesDecimals);
+  const calculatedPercent = calculatePercent(disabilities);
 
-  const factorDecimal = round(calculatedPercent * 0.1, 3);
-  const percentDecimal = round(calculatedPercent + factorDecimal, 2);
-
-  const factor = round(factorDecimal * 100, 1);
-  const percent = round(percentDecimal * 100);
+  const factor = round(calculatedPercent * 0.1, 1);
+  const percent = round(calculatedPercent + factor, 0);
 
   return { factor, percent };
 }
@@ -71,12 +65,11 @@ export function calculateBilateral(disabilities : number[]) : IBilateral | undef
  * // returns { total: 44, rounded: 40 }
  */
 export default function calculateRating(percentages: number[]): IRating {
-  const percentagesDecimals = percentages.map((percent) => percent / 100);
-  const percentvalue = calculatePercent(percentagesDecimals);
+  const percentvalue = calculatePercent(percentages);
 
   // Combined / total disability percent
-  const total = percentvalue > 1 ? 100 : round(percentvalue * 100);
-  const rounded = round(percentvalue, 1) * 100;
+  const total = percentvalue > 100 ? 100 : percentvalue;
+  const rounded = Math.round(percentvalue / 10) * 10;
 
   return { total, rounded };
 }

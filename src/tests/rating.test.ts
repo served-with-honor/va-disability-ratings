@@ -2,15 +2,15 @@ import { describe, expect, test } from '@jest/globals';
 import calculateRating, { calculatePercent, calculateBilateral } from '../rating';
 
 describe('Calculate Specific Percent', () => {
-  test('1', () => expect(calculatePercent([0.4, 0.3])).toEqual(0.58));
-  test('2', () => expect(calculatePercent([0.3, 0.2, 0.1])).toEqual(0.50));
-  test('3', () => expect(calculatePercent([0.4, 0.3])).toEqual(0.58));
-  test('4', () => expect(calculatePercent([0.5, 0.3, 0.1, 0.1, 0.1])).toEqual(0.75));
+  test('1', () => expect(calculatePercent([40, 30])).toEqual(58));
+  test('2', () => expect(calculatePercent([30, 20, 10])).toEqual(50));
+  test('3', () => expect(calculatePercent([40, 30])).toEqual(58));
+  test('4', () => expect(calculatePercent([50, 30, 10, 10, 10])).toEqual(75));
 });
 
 describe('Calculate Percent Exceptions', () => {
-  test('Under Zero', () => expect(calculatePercent([-0.1])).toEqual(0));
-  test('With Under Zero', () => expect(calculatePercent([0.2, -0.1])).toEqual(0.2));
+  test('Under Zero', () => expect(calculatePercent([-1])).toEqual(0));
+  test('With Under Zero', () => expect(calculatePercent([20, -1])).toEqual(20));
   test('Zero', () => expect(calculatePercent([0])).toEqual(0));
   test('100', () => expect(calculatePercent([1])).toEqual(1));
   test('Over 100', () => expect(calculatePercent([1.2])).toEqual(1));
@@ -23,7 +23,6 @@ describe('Calculate Bilaterals', () => {
   test('Simple', () => expect(calculateBilateral([30, 20])).toEqual({ factor: 4.4, percent: 48 }));
   test('Muliple', () => expect(calculateBilateral([10, 10, 10])).toEqual({ factor: 2.7, percent: 30 }));
 });
-
 
 describe('Calculate Rating Exceptions', () => {
   test('Equal Zero', () => expect(calculateRating([0])).toStrictEqual({ rounded: 0, total: 0 }));
