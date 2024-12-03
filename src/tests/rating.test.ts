@@ -5,6 +5,14 @@ describe('Calculate Percent', () => {
   test('', () => expect(calculatePercent([0.4, 0.3])).toEqual(0.58));
 });
 
+describe('Calculate Percent Exceptions', () => {
+  test('Under Zero', () => expect(calculatePercent([-0.1])).toEqual(0));
+  test('With Under Zero', () => expect(calculatePercent([0.2, -0.1])).toEqual(0.2));
+  test('Zero', () => expect(calculatePercent([0])).toEqual(0));
+  test('100', () => expect(calculatePercent([1])).toEqual(1));
+  test('Over 100', () => expect(calculatePercent([1.2])).toEqual(1));
+});
+
 describe('Calculate Bilaterals', () => {
   test('Empty', () => expect(() => calculateBilateral([])).toThrow('Insufficient ratings'));
   test('Only 1 item', () => expect(() => calculateBilateral([10])).toThrow('Insufficient ratings'));
