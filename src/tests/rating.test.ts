@@ -41,16 +41,15 @@ describe('Calculate Specific Ratings', () => {
   test('3', () => expect(calculateRating([10, 10, 10, 30, 50])).toEqual({ rounded: 80, total: 75 }));
 });
 
-
 describe('Calculate Rating Ranges', () => {
   test('b-1', () => expect(calculateRating([10, 20])).toEqual({ rounded: 30, total: 28 }));
   test('b-2', () => expect(calculateRating([10, 20, 30])).toEqual({ rounded: 50, total: 50 }));
   test('b-3', () => expect(calculateRating([10, 20, 30, 40])).toEqual({ rounded: 70, total: 69 }));
-  test('b-4', () => expect(calculateRating([10, 20, 30, 40])).toEqual({ rounded: 90, total: 85 }));
+  test('b-4', () => expect(calculateRating([10, 20, 30, 40, 50])).toEqual({ rounded: 90, total: 85 }));
   test('b-5', () => expect(calculateRating([10, 20, 30, 40, 50, 60])).toEqual({ rounded: 100, total: 95 }));
   test('b-6', () => expect(calculateRating([10, 20, 30, 40, 50, 60, 70])).toEqual({ rounded: 100, total: 98 }));
   test('b-7', () => expect(calculateRating([10, 20, 30, 40, 50, 60, 70, 80])).toEqual({ rounded: 100, total: 99 }));
-  test('b-8', () => expect(calculateRating([10, 20, 30, 40, 50, 60, 70, 80, 90])).toEqual({ rounded: 100, total: 99 }));
+  test('b-8', () => expect(calculateRating([10, 20, 30, 40, 50, 60, 70, 80, 90])).toEqual({ rounded: 100, total: 100 }));
 
   test('10-1', () => expect(calculateRating([10])).toEqual({ rounded: 10, total: 10 }));
   test('10-2', () => expect(calculateRating([10, 10])).toEqual({ rounded: 20, total: 19 }));
