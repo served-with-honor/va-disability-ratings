@@ -1,8 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
 import calculateRating, { calculatePercent, calculateBilateral } from '../rating';
 
-describe('Calculate Percent', () => {
-  test('', () => expect(calculatePercent([0.4, 0.3])).toEqual(0.58));
+describe('Calculate Specific Percent', () => {
+  test('1', () => expect(calculatePercent([0.4, 0.3])).toEqual(0.58));
+  test('2', () => expect(calculatePercent([0.3, 0.2, 0.1])).toEqual(0.50));
+  test('3', () => expect(calculatePercent([0.4, 0.3])).toEqual(0.58));
+  test('4', () => expect(calculatePercent([0.5, 0.3, 0.1, 0.1, 0.1])).toEqual(0.75));
 });
 
 describe('Calculate Percent Exceptions', () => {
