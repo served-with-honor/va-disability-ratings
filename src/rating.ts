@@ -3,25 +3,38 @@ import { round, isValidRating } from './utilities';
 
 /**
  * Calculate disability percentage
- * @function calculatePercent
+ * @function calculateCombinedRating
  * @param {number[]} ratings - Array of disability ratings
  * @return {number} - Combined disability percentage
  */
-export function calculatePercent(ratings: number[]): number {
-  // Still fuzy on this math but it works ¯\_(ツ)_/¯
+export function calculateCombinedRating(ratings: number[]): number {
+  if (ratings.length === 0) return 0;
 
   // Sort in descending order (largest first)
   ratings.sort((a, b) => b - a);
-  const final = ratings.reduce((total, cur, idx) => {
-    if (idx === 0) return total + cur;
 
-    const diff = 1 - total;
-    const subNum = cur * diff;
-    return subNum + total;
-  }, 0);
-  if (final >= 1) return 1;
-  if (final <= 0) return 0;
-  return Math.round(final * 100) / 100;
+  if (ratings[0] <= 0) return 0;
+  if (ratings[0] >= 100) return 100;
+
+  // Start with the largest rating (e.g., back injury at 30%). Subtract it from 100%.
+  // 100% – 30% = 70% remaining.
+  // Subtract the next rating (e.g., knee injury at 20%) from what’s left.
+  // 20% of 70% = 14%
+  // 70% – 14% = 56% remaining.
+  // Subtract the last rating (e.g., tinnitus at 10%) from the new total.
+  // 10% of 56% = 5.6%
+  // 56% – 5.6% = 50.4%.
+  // Round to the nearest 10 for the combined rating.
+  // 50.4% rounds to 50%.
+  // Lastly, subtract the result from 100 to get the final combined rating.
+  const final = 100 - ratings.reduce((remaining, num) => {
+    // Ignore invalid ratings
+    if (num <= 0 || num >= 100) return remaining;
+
+    return remaining - Math.round((remaining * num) / 100);
+  }, 100);
+
+  return final;
 }
 
 /**
@@ -49,14 +62,10 @@ export function calculateBilateral(disabilities : number[]) : IBilateral | undef
   if (!disabilities.every(isValidRating)) throw new Error('Invalid ratings');
   if (disabilities.length <= 1) throw new Error('Insufficient ratings');
 
-  const percentagesDecimals = disabilities.map((percent) => percent / 100);
-  const calculatedPercent = calculatePercent(percentagesDecimals);
+  const calculatedPercent = calculateCombinedRating(disabilities);
 
-  const factorDecimal = round(calculatedPercent * 0.1, 3);
-  const percentDecimal = round(calculatedPercent + factorDecimal, 2);
-
-  const factor = round(factorDecimal * 100, 1);
-  const percent = round(percentDecimal * 100);
+  const factor = round(calculatedPercent * 0.1, 1);
+  const percent = round(calculatedPercent + factor, 0);
 
   return { factor, percent };
 }
@@ -71,12 +80,11 @@ export function calculateBilateral(disabilities : number[]) : IBilateral | undef
  * // returns { total: 44, rounded: 40 }
  */
 export default function calculateRating(percentages: number[]): IRating {
-  const percentagesDecimals = percentages.map((percent) => percent / 100);
-  const percentvalue = calculatePercent(percentagesDecimals);
+  const percentvalue = calculateCombinedRating(percentages);
 
   // Combined / total disability percent
-  const total = percentvalue > 1 ? 100 : round(percentvalue * 100);
-  const rounded = round(percentvalue, 1) * 100;
+  const total = percentvalue > 100 ? 100 : percentvalue;
+  const rounded = Math.round(percentvalue / 10) * 10;
 
   return { total, rounded };
 }
