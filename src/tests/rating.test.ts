@@ -21,13 +21,19 @@ describe('Calculate Bilaterals', () => {
   test('Muliple', () => expect(calculateBilateral([10, 10, 10])).toEqual({ factor: 2.7, percent: 30 }));
 });
 
-describe('Calculate Rating', () => {
-  test('Under 0', () => expect(calculateRating([-20])).toStrictEqual({ rounded: 0, total: 0 }));
+
+describe('Calculate Rating Exceptions', () => {
+  test('Equal Zero', () => expect(calculateRating([0])).toStrictEqual({ rounded: 0, total: 0 }));
+  test('Under Zero', () => expect(calculateRating([-20])).toStrictEqual({ rounded: 0, total: 0 }));
+  test('Multiple Zeros', () => expect(calculateRating([0, 0, 0])).toStrictEqual({ rounded: 0, total: 0 }));
+  test('Equal 100', () => expect(calculateRating([100])).toStrictEqual({ rounded: 100, total: 100 }));
   test('Over 100', () => expect(calculateRating([200])).toStrictEqual({ rounded: 100, total: 100 }));
   test('Empty', () => expect(calculateRating([])).toStrictEqual({ rounded: 0, total: 0 }));
-  test('Zeros', () => expect(calculateRating([0, 0, 0])).toStrictEqual({ rounded: 0, total: 0 }));
   test('Rounding Up', () => expect(calculateRating([90, 50])).toStrictEqual({ rounded: 100, total: 95 }));
   test('Rounding Down', () => expect(calculateRating([90, 30])).toStrictEqual({ rounded: 90, total: 93 }));
+});
+
+describe('Calculate Rating', () => {
   test('123', () => expect(calculateRating([40, 30])).toEqual({ rounded: 60, total: 58 }));
 });
 
