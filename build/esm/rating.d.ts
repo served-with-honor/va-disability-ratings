@@ -1,11 +1,11 @@
 import type { IBilateral, IRating } from './types.js';
 /**
  * Calculate disability percentage
- * @function calculatePercent
+ * @function calculateCombinedRating
  * @param {number[]} ratings - Array of disability ratings
  * @return {number} - Combined disability percentage
  */
-export declare function calculatePercent(ratings: number[]): number;
+export declare function calculateCombinedRating(ratings: number[]): number;
 /**
  * Calculate bilateral factor and percentage
  * @function calculateBilateral

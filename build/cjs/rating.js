@@ -1,31 +1,42 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculateBilateral = exports.calculatePercent = void 0;
+exports.calculateBilateral = exports.calculateCombinedRating = void 0;
 var utilities_1 = require("./utilities");
 /**
  * Calculate disability percentage
- * @function calculatePercent
+ * @function calculateCombinedRating
  * @param {number[]} ratings - Array of disability ratings
  * @return {number} - Combined disability percentage
  */
-function calculatePercent(ratings) {
-    // Still fuzy on this math but it works ¯\_(ツ)_/¯
+function calculateCombinedRating(ratings) {
+    if (ratings.length === 0)
+        return 0;
     // Sort in descending order (largest first)
     ratings.sort(function (a, b) { return b - a; });
-    var final = ratings.reduce(function (total, cur, idx) {
-        if (idx === 0)
-            return total + cur;
-        var diff = 1 - total;
-        var subNum = cur * diff;
-        return subNum + total;
-    }, 0);
-    if (final >= 1)
-        return 1;
-    if (final <= 0)
+    if (ratings[0] <= 0)
         return 0;
-    return Math.round(final * 100) / 100;
+    if (ratings[0] >= 100)
+        return 100;
+    // Start with the largest rating (e.g., back injury at 30%). Subtract it from 100%.
+    // 100% – 30% = 70% remaining.
+    // Subtract the next rating (e.g., knee injury at 20%) from what’s left.
+    // 20% of 70% = 14%
+    // 70% – 14% = 56% remaining.
+    // Subtract the last rating (e.g., tinnitus at 10%) from the new total.
+    // 10% of 56% = 5.6%
+    // 56% – 5.6% = 50.4%.
+    // Round to the nearest 10 for the combined rating.
+    // 50.4% rounds to 50%.
+    // Lastly, subtract the result from 100 to get the final combined rating.
+    var final = 100 - ratings.reduce(function (remaining, num) {
+        // Ignore invalid ratings
+        if (num <= 0 || num >= 100)
+            return remaining;
+        return remaining - Math.round((remaining * num) / 100);
+    }, 100);
+    return final;
 }
-exports.calculatePercent = calculatePercent;
+exports.calculateCombinedRating = calculateCombinedRating;
 /**
  * Calculate bilateral factor and percentage
  * @function calculateBilateral
@@ -52,12 +63,9 @@ function calculateBilateral(disabilities) {
         throw new Error('Invalid ratings');
     if (disabilities.length <= 1)
         throw new Error('Insufficient ratings');
-    var percentagesDecimals = disabilities.map(function (percent) { return percent / 100; });
-    var calculatedPercent = calculatePercent(percentagesDecimals);
-    var factorDecimal = (0, utilities_1.round)(calculatedPercent * 0.1, 3);
-    var percentDecimal = (0, utilities_1.round)(calculatedPercent + factorDecimal, 2);
-    var factor = (0, utilities_1.round)(factorDecimal * 100, 1);
-    var percent = (0, utilities_1.round)(percentDecimal * 100);
+    var calculatedPercent = calculateCombinedRating(disabilities);
+    var factor = (0, utilities_1.round)(calculatedPercent * 0.1, 1);
+    var percent = (0, utilities_1.round)(calculatedPercent + factor, 0);
     return { factor: factor, percent: percent };
 }
 exports.calculateBilateral = calculateBilateral;
@@ -71,11 +79,10 @@ exports.calculateBilateral = calculateBilateral;
  * // returns { total: 44, rounded: 40 }
  */
 function calculateRating(percentages) {
-    var percentagesDecimals = percentages.map(function (percent) { return percent / 100; });
-    var percentvalue = calculatePercent(percentagesDecimals);
+    var percentvalue = calculateCombinedRating(percentages);
     // Combined / total disability percent
-    var total = percentvalue > 1 ? 100 : (0, utilities_1.round)(percentvalue * 100);
-    var rounded = (0, utilities_1.round)(percentvalue, 1) * 100;
+    var total = percentvalue > 100 ? 100 : percentvalue;
+    var rounded = Math.round(percentvalue / 10) * 10;
     return { total: total, rounded: rounded };
 }
 exports.default = calculateRating;
