@@ -8,10 +8,16 @@ import { round, isValidRating } from './utilities';
  * @return {number} - Combined disability percentage
  */
 export function calculatePercent(ratings: number[]): number {
+  if (ratings.length === 0) return 0;
+
   // Still fuzy on this math but it works ¯\_(ツ)_/¯
 
   // Sort in descending order (largest first)
   ratings.sort((a, b) => b - a);
+
+  if (ratings[0] <= 0) return 0;
+  if (ratings[0] >= 100) return 100;
+
   const final = 100 - ratings.reduce((remaining, num) => {
     // Ignore invalid ratings
     if (num <= 0 || num >= 100) return remaining;
